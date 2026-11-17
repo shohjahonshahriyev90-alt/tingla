@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#090a0f">
+  <title>Rayxona Bonu uchun</title>
+  
+  <!-- Kirill / Ruscha shriftlar (Inter) to'liq qo'llab-quvvatlash -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=cyrillic,cyrillic-ext,latin" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #090a0f;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      color: #f3f4f6;
+    }
+
+    button, input, textarea {
+      font-family: inherit;
+    }
+
+    /* Orqa fon rasmi */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('photo_2026-11-17_17-14-27.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      filter: brightness(0.32) contrast(1.1);
+      transform: scale(1.03);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-gradient-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(9, 10, 15, 0.4) 0%, rgba(9, 10, 15, 0.88) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Yumshoq fon nurlari */
+    .ambient-glow {
+      position: fixed;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.06) 50%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      filter: blur(60px);
+      z-index: 2;
+    }
+
+    /* Asosiy Ekran Maydoni (Hech qanday quti/hoshiyasiz, toza butun ekran) */
+    .screen-container {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 36px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 10;
+    }
+
+    /* Qadamlar */
+    .step {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    .step.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tag {
+      font-size: clamp(13px, 2.8vw, 15px);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: #38bdf8;
+      margin-bottom: 14px;
+    }
+
+    .heading {
+      font-size: clamp(24px, 5.5vw, 34px);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      max-width: 540px;
+    }
+
+    .text {
+      font-size: clamp(15px, 3vw, 17px);
+      line-height: 1.75;
+      color: #94a3b8;
+      margin-bottom: 28px;
+      max-width: 500px;
+      font-weight: 400;
+    }
+
+    /* VIDEO RAMKASI */
+    .video-card-container {
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto 24px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .video-frame-wrapper {
+      position: relative;
+      width: 100%;
+      height: clamp(360px, 56vh, 480px);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.15);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      background: #000;
+      margin-bottom: 14px;
+    }
+    .video-frame-wrapper video {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .video-direct-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #38bdf8;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .video-direct-btn:active {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(0.97);
+    }
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .video-direct-btn:active {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(0.97);
+    }
+
+    /* Asosiy tugmalar */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 220px;
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 15px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-primary:active {
+      background: #0369a1;
+      transform: scale(0.97);
+    }
+
+    /* Taklif tugmalari maydoni */
+    .action-group {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      overflow: visible;
+    }
+
+    .btn-yes {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 36px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 2;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+      transition: transform 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-yes:active {
+      background: #059669;
+    }
+
+    .btn-no {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.07);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 14px 26px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      z-index: 50;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 120px;
+      max-width: 180px;
+      transition: left 0.15s ease, top 0.15s ease;
+      touch-action: none;
+    }
+      position: fixed;
+      bottom: 60px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 14px 26px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      z-index: 50;
+      white-space: nowrap;
+      transition: left 0.15s ease, top 0.15s ease;
+      touch-action: none;
+    }
+
+    /* Muvaffaqiyat bloki */
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+    }
+
+    .info-box {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      font-size: 14.5px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .info-box div {
+      margin-bottom: 8px;
+    }
+    .info-box div:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Bot xabarnomasi holati */
+    .bot-status {
+      font-size: 13.5px;
+      color: #38bdf8;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-tg {
+      display: inline-block;
+      min-width: 240px;
+      background: #0284c7;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-tg:active {
+      background: #0369a1;
+    }
+
+    /* YUKLANISH SAHIFASI (LOADING SCREEN) */
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #090a0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loading-text {
+      font-size: 17px;
+      color: #cbd5e1;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ORQA FON RASMI -->
+  <div class="bg-layer"></div>
+  <div class="bg-gradient-overlay"></div>
+  <div class="ambient-glow"></div>
+
+  <!-- YUKLANISH EKRANI (LOADING SCREEN) -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-text">Пожалуйста, подождите немного...</div>
+  </div>
+
+  <div class="screen-container">
+
+    <!-- 1-BOSQICH: KIRISH -->
+    <div class="step active" id="step-1">
+      <h1 class="heading" style="margin-bottom: 32px;">Siz bu so'zlarga ishonmassiz, lekin bular rost...</h1>
+      <button class="btn-primary" onclick="nextStep(2)">Далее</button>
+    </div>
+
+    <!-- 2-BOSQICH: VIDEO RAMKASI -->
+    <div class="step" id="step-2">
+      <div class="tag">Siz uchun video</div>
+      <h2 class="heading">Досмотрите до конца</h2>
+      
+      <div class="video-card-container">
+        <div class="video-frame-wrapper" id="video-container">
+          <!-- Saytning o'zida to'g'ridan-to'g'ri ijro etiladigan video player -->
+          <video 
+            id="main-video" 
+            playsinline 
+            webkit-playsinline
+            x5-playsinline
+            controls 
+            loop 
+            preload="auto"
+            poster="https://i.ytimg.com/vi/Y-dMGjrrvFA/hqdefault.jpg">
+            <source src="video.mp4" type="video/mp4">
+            Sizning brauzeringiz ushbu videoni qo'llab-quvvatlamaydi.
+          </video>
+        </div>
+
+        <a class="video-direct-btn" href="https://youtube.com/shorts/Y-dMGjrrvFA" target="_blank">
+          <span>▶</span> YouTubeda ham ko'rish
+        </a>
+      </div>
+
+      <button class="btn-primary" onclick="nextStep(3)">Далее</button>
+    </div>
+
+    <!-- 3-BOSQICH -->
+    <div class="step" id="step-3">
+      <h2 class="heading" style="margin-bottom: 32px; max-width: 520px;">
+        Birga qahva ichib, dildan suhbatlashish uchun vaqt ajrata olasizmi?
+      </h2>
+
+      <div class="action-group" id="arena">
+        <button class="btn-yes" id="btn-yes" onclick="handleYes()">O'ylab ko'raman</button>
+      </div>
+    </div>
+
+    <!-- 4-BOSQICH: ROZILIK VA TELEGRAM BOT XABARI -->
+    <div class="step" id="step-4">
+      <div class="success-icon">✓</div>
+      <h2 class="heading">Ajoyib!</h2>
+      <p class="text">
+        Roziligingizdan juda xursandman.
+      </p>
+
+      <div class="bot-status" id="bot-status">
+        <span>✓</span> Javobingiz yetkazildi
+      </div>
+
+      <div class="info-box" style="text-align: center; font-size: 16px; font-weight: 500; padding: 22px 24px; color: #e2e8f0;">
+        Uchrashuv joyi va vaqtini birgalikda kelishib olamiz.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- "Yo'q" tugmasi to'g'ridan body ga — position:fixed to'g'ri ishlashi uchun -->
+  <button class="btn-no" id="btn-no" onclick="handleNo()" style="display:none;">Yo'q</button>
+
+  <script>
+    // YUKLANISH SAHIFASI (Animatsiyalarsiz, faqat ruscha yozuv)
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const loaderScreen = document.getElementById('loading-screen');
+        if (loaderScreen) loaderScreen.classList.add('hidden');
+      }, 1000);
+    });
+
+    // TELEGRAM BOT SOZLAMALARI
+    const TG_CONFIG = {
+      botToken: '8268201814:AAE5ipuJXRCJwQLRnMd_OTOUofDbjwDKP2M',
+      chatId: '422057508'
+    };
+
+    const mainVideo = document.getElementById('main-video');
+
+    // Qadamlar orasida o'tish
+    function nextStep(num) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('step-' + num);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 2-bosqichga o'tganda videoni saytning o'zida darhol ijro etish
+      if (num === 2) {
+        if (mainVideo) {
+          mainVideo.currentTime = 0;
+          const playPromise = mainVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Brauzer avtomatik ovozli ijroni cheklasa
+              mainVideo.muted = true;
+              mainVideo.play().catch(() => {});
+            });
+          }
+        }
+      } else if (num === 3) {
+        // 3-bosqich: "Yo'q" tugmasini ko'rsatish
+        if (mainVideo && !mainVideo.paused) mainVideo.pause();
+        btnNo.style.display = 'block';
+        setTimeout(() => { initBtnNoPosition(); }, 50);
+      } else {
+        // Boshqa bosqichda "Yo'q" tugmasini yashirish
+        btnNo.style.display = 'none';
+        if (mainVideo && !mainVideo.paused) {
+          mainVideo.pause();
+        }
+      }
+
+      // To'liq ekranga o'tish
+      try {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    // Telegram Bot orqali to'g'ridan-to'g'ri xabar yuborish
+    async function notifyTelegramBot() {
+      const now = new Date();
+      const timeStr = now.toLocaleDateString('uz-UZ') + ', ' + now.toLocaleTimeString('uz-UZ');
+      
+      const message = `🎉 <b>YANGI XUSHXABAR!</b>\n\n` +
+                      `👤 <b>Rayxona Bonu</b> taklifingizga:\n` +
+                      `👉 <b>"HA, Roziman!"</b> deb javob berdi! 🥰☕\n\n` +
+                      `🕒 <b>Vaqt:</b> ${timeStr}`;
+
+      const statusEl = document.getElementById('bot-status');
+      if (statusEl) {
+        statusEl.innerHTML = `<span>⏳</span> Xabar yetkazilmoqda...`;
+      }
+
+      try {
+        const url = `https://api.telegram.org/bot${TG_CONFIG.botToken}/sendMessage`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TG_CONFIG.chatId,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+        if (res.ok && statusEl) {
+          statusEl.innerHTML = `<span>✓</span> Javobingiz Telegram botga yetkazildi!`;
+        }
+      } catch (err) {
+        console.warn("Botga yuborish:", err);
+        if (statusEl) {
+          statusEl.innerHTML = `<span>✓</span> Javobingiz qabul qilindi!`;
+        }
+      }
+    }
+
+    // Qochuvchi "Yo'q" tugmasi — ekran chegarasida, "Roziman" ga tegmaydi
+    let dodgeCount = 0;
+    const dodgePhrases = [
+      "Yo'q",
+      "Rostdanmi?",
+      "O'ylab ko'ring...",
+      "Balki rozisizdir?",
+      "Yo'q deb bo'lmaydi :)",
+      "Faqat 'O'ylab ko'raman' :)"
+    ];
+
+    const btnNo  = document.getElementById('btn-no');
+    const btnYes = document.getElementById('btn-yes');
+
+    // "Yo'q" tugmasini ekranning ixtiyoriy xavfsiz joyiga ko'chirish
+    function dodge() {
+      dodgeCount++;
+      btnNo.textContent = dodgePhrases[dodgeCount % dodgePhrases.length];
+
+      const bw = btnNo.offsetWidth;
+      const bh = btnNo.offsetHeight;
+      const yw = btnYes.offsetWidth;
+      const yh = btnYes.offsetHeight;
+
+      const margin = 12; // ekran chetidan minimal masofa (px)
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+
+      // "Roziman" tugmasining ekrandagi holati
+      const yr = btnYes.getBoundingClientRect();
+      const yCx = yr.left + yr.width / 2;
+      const yCy = yr.top  + yr.height / 2;
+
+      let x, y, tries = 0;
+      do {
+        x = margin + Math.random() * (vw - bw - margin * 2);
+        y = margin + Math.random() * (vh - bh - margin * 2);
+        tries++;
+        // "Roziman" tugmasi bilan o'ng-chap/yuqori-pastdan 24px masofa saqlanadi
+        const noOverlapX = x + bw < yr.left - 24 || x > yr.right + 24;
+        const noOverlapY = y + bh < yr.top - 24  || y > yr.bottom + 24;
+        if (noOverlapX || noOverlapY) break;
+      } while (tries < 20);
+
+      btnNo.style.left = x + 'px';
+      btnNo.style.top  = y + 'px';
+
+      // "Roziman" tugmasi qo'zg'alishsiz — faqat biroz kattaroq bo'ladi
+      const scale = Math.min(1.25, 1.0 + dodgeCount * 0.05);
+      btnYes.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    // Boshlang'ich pozitsiyani o'rnatish (3-bosqich ko'ringanda)
+    function initBtnNoPosition() {
+      // "Yo'q" tugmasini "Roziman" tugmasining yoniga joylashtirish
+      const yr = btnYes.getBoundingClientRect();
+      const bw = btnNo.offsetWidth || 120;
+      const bh = btnNo.offsetHeight || 50;
+      const margin = 20; // 20px oraligʻda joylash
+      // Ekranning o‘ng chetidan chiqmasligi uchun hisoblash
+      let left = yr.right + margin;
+      if (left + bw + margin > window.innerWidth) {
+        left = Math.max(margin, window.innerWidth - bw - margin);
+      }
+      // Vertikal markazda joylash (yoki yuqori chetga chiqmasin)
+      let top = yr.top + (yr.height - bh) / 2;
+      if (top < margin) top = margin;
+      if (top + bh + margin > window.innerHeight) top = window.innerHeight - bh - margin;
+      btnNo.style.left = left + 'px';
+      btnNo.style.top = top + 'px';
+      btnNo.style.bottom = '';
+      btnNo.style.right = '';
+    }
+
+
+    btnNo.addEventListener('mouseenter', dodge);
+    btnNo.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      dodge();
+    }, { passive: false });
+
+    function handleNo() { dodge(); }
+
+    // "Roziman" bosilganda
+    function handleYes() {
+      // "Yo'q" tugmasini qochirish
+      dodge();
+      // Bir soniya kutib, keyin Telegram botga xabar yuborish va muvaffaqiyat sahifasiga o'tish
+      setTimeout(() => {
+        notifyTelegramBot();
+        nextStep(4);
+      }, 300);
+    }
+
+  </script>
+</body>
+</html>
